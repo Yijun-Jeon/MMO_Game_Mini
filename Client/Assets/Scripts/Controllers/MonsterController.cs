@@ -3,43 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
-public class PlayerController : CreatureController
-{ 
+public class MonsterController : CreatureController
+{
     protected override void Init()
     {
         base.Init();
     }
     protected override void UpdateController()
     {
-        GetDirInput();
+        // GetDirInput();
         base.UpdateController();
     }
-
-    // ì¹´ë©”ë¼ ì œì–´ì˜ ê²½ìš° LateUpdateì—ì„œ ì£¼ë¡œ ì„¤ì •
-    void LateUpdate()
-    {
-        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
-    }
-    // ì´ë™ í‚¤ ì…ë ¥ ë°›ìŒ
+    // ÀÌµ¿ Å° ÀÔ·Â ¹ŞÀ½
     void GetDirInput()
     {
-        if(Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.W))
         {
-            // ê¸°ê¸°ë§ˆë‹¤ Frameì´ ë‹¤ë¥¼ ìˆ˜ ìˆê¸° ë•Œë¬¸ì— deltaTimeì„ ê³±í•´ì„œ ëª¨ë“  ë¨¸ì‹ ì—ì„œ ê°™ê²Œ ë³´ì´ê²Œ í•¨
+            // ±â±â¸¶´Ù FrameÀÌ ´Ù¸¦ ¼ö ÀÖ±â ¶§¹®¿¡ deltaTimeÀ» °öÇØ¼­ ¸ğµç ¸Ó½Å¿¡¼­ °°°Ô º¸ÀÌ°Ô ÇÔ
             //transform.position += Vector3.up * Time.deltaTime * _speed;
             Dir = MoveDir.Up;
         }
-        else if(Input.GetKey(KeyCode.S))
-        {  
+        else if (Input.GetKey(KeyCode.S))
+        {
             //transform.position += Vector3.down * Time.deltaTime * _speed;
             Dir = MoveDir.Down;
         }
-        else if(Input.GetKey(KeyCode.A))
+        else if (Input.GetKey(KeyCode.A))
         {
             //transform.position += Vector3.left * Time.deltaTime * _speed;
             Dir = MoveDir.Left;
         }
-        else if(Input.GetKey(KeyCode.D))
+        else if (Input.GetKey(KeyCode.D))
         {
             //transform.position += Vector3.right * Time.deltaTime * _speed;
             Dir = MoveDir.Right;
