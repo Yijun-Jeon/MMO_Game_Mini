@@ -9,7 +9,7 @@ public class CreatureController : MonoBehaviour
 {
     public float _speed = 5.0f;
 
-    protected Vector3Int _cellPos = new Vector3Int(-4, 1, 0); // 좌표상에 실제 위치
+    public Vector3Int CellPos { get; set; } = new Vector3Int(-4, 1, 0); // 좌표상에 실제 위치
     protected Animator _animator;
     protected SpriteRenderer _sprite;
 
@@ -119,7 +119,7 @@ public class CreatureController : MonoBehaviour
         // Player Start()
         _animator = GetComponent<Animator>();
         _sprite = GetComponent<SpriteRenderer>();
-        Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(_cellPos) + new Vector3(0.5f, 0.6f);
+        Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.6f);
         transform.position = pos;
     }
 
@@ -135,7 +135,7 @@ public class CreatureController : MonoBehaviour
         if (State != CreatureState.Moving)
             return;
 
-        Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(_cellPos) + new Vector3(0.5f, 0.6f);
+        Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.6f);
         // 방향 vector - 2가지의 정보 : 실제 이동하는 방향, 이동하려는 목적지까지의 크기
         Vector3 moveDir = destPos - transform.position;
 
@@ -162,7 +162,7 @@ public class CreatureController : MonoBehaviour
     {
         if (State == CreatureState.Idle && _dir != MoveDir.None)
         {
-            Vector3Int destPos = _cellPos;
+            Vector3Int destPos = CellPos;
             switch (_dir)
             {
                 case MoveDir.Up:
@@ -179,10 +179,13 @@ public class CreatureController : MonoBehaviour
                     break;
             }
 
+            State = CreatureState.Moving;
             if (Managers.Map.CanGo(destPos))
             {
-                _cellPos = destPos;
-                State = CreatureState.Moving;
+                if (Managers.Object.Find(destPos) == null)
+                {
+                    CellPos = destPos;
+                }
             }
         }
     }

@@ -7,7 +7,10 @@ public class MonsterController : CreatureController
 {
     protected override void Init()
     {
+        // 순서 중요 - animator 먼저 찾아줘야 하기 때문
         base.Init();
+        State = CreatureState.Idle;
+        Dir = MoveDir.None;
     }
     protected override void UpdateController()
     {
