@@ -13,8 +13,8 @@ public class CreatureController : MonoBehaviour
     protected Animator _animator;
     protected SpriteRenderer _sprite;
 
-    CreatureState _state = CreatureState.Idle;
-    public CreatureState State
+    protected CreatureState _state = CreatureState.Idle;
+    protected CreatureState State
     {
         get { return _state; }
         set
@@ -28,8 +28,8 @@ public class CreatureController : MonoBehaviour
     }
 
     // 마지막으로 바라보고 있던 방향
-    MoveDir _lastDir = MoveDir.Down;
-    MoveDir _dir = MoveDir.Down;
+    protected MoveDir _lastDir = MoveDir.Down;
+    protected MoveDir _dir = MoveDir.Down;
 
     public MoveDir Dir
     {
