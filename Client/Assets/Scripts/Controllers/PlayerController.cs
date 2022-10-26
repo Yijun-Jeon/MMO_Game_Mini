@@ -145,8 +145,12 @@ public class PlayerController : CreatureController
         if (Input.GetKey(KeyCode.Space))
         {
             State = CreatureState.Skill;
-            //_coSkill = StartCoroutine("CoStartPunch");
             _coSkill = StartCoroutine("CoStartShootArrow");
+        }
+        else if (Input.GetKey(KeyCode.LeftShift))
+        {
+            State = CreatureState.Skill;
+            _coSkill = StartCoroutine("CoStartPunch");
         }
     }
 
@@ -156,7 +160,9 @@ public class PlayerController : CreatureController
         GameObject go =  Managers.Object.Find(GetFrontCellPos());
         if(go != null)
         {
-            Debug.Log(go.name);
+            CreatureController cc = go.GetComponent<CreatureController>();
+            if (cc != null)
+                cc.OnDamaged();
         }
 
         _rangeSkill = false;

@@ -46,4 +46,18 @@ public class MonsterController : CreatureController
             Dir = MoveDir.None;
         }
     }
+
+    // 피격 처리
+    public override void OnDamaged()
+    {
+        // 피격 이펙트 
+        GameObject effect = Managers.Resource.Instantiate("Effect/DieEffect");
+        effect.transform.position = transform.position;
+        effect.GetComponent<Animator>().Play("START");
+        GameObject.Destroy(effect, 0.5f); // 0.5초 뒤 소멸
+
+        // 피격
+        Managers.Object.Remove(gameObject);
+        Managers.Resource.Destroy(gameObject);
+    }
 }

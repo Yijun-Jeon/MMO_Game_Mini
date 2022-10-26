@@ -64,8 +64,11 @@ public class ArrowController : CreatureController
                 }
                 else
                 {
-                    // 오브젝트에 충돌 후 소멸
-                    Debug.Log(go.name);
+                    CreatureController cc = go.GetComponent<CreatureController>();
+                    if (cc != null)
+                        cc.OnDamaged();
+
+                    // 화살 - 오브젝트에 충돌 후 소멸
                     Managers.Resource.Destroy(gameObject);
                 }
             }
