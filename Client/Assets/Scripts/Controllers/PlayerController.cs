@@ -20,13 +20,33 @@ public class PlayerController : CreatureController
         {
             case CreatureState.Idle:
                 GetDirInput();
-                GetIdleInput();
                 break;
             case CreatureState.Moving:
                 GetDirInput();
                 break;
         }
         base.UpdateController();
+    }
+    protected override void UpdateIdle()
+    {
+        // 이동 상태로 갈 지 확인
+        if(Dir != MoveDir.None)
+        {
+            State = CreatureState.Moving;
+            return;
+        }
+
+        // 스킬 상태로 갈 지 확인
+        if (Input.GetKey(KeyCode.Space))
+        {
+            State = CreatureState.Skill;
+            _coSkill = StartCoroutine("CoStartShootArrow");
+        }
+        else if (Input.GetKey(KeyCode.LeftShift))
+        {
+            State = CreatureState.Skill;
+            _coSkill = StartCoroutine("CoStartPunch");
+        }
     }
 
     // 애니메이션을 바꿔주는 공통 함수
@@ -137,20 +157,6 @@ public class PlayerController : CreatureController
         else
         {
             Dir = MoveDir.None;
-        }
-    }
-
-    void GetIdleInput()
-    {
-        if (Input.GetKey(KeyCode.Space))
-        {
-            State = CreatureState.Skill;
-            _coSkill = StartCoroutine("CoStartShootArrow");
-        }
-        else if (Input.GetKey(KeyCode.LeftShift))
-        {
-            State = CreatureState.Skill;
-            _coSkill = StartCoroutine("CoStartPunch");
         }
     }
 

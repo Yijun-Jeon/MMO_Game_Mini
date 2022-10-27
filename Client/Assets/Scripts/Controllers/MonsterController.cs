@@ -5,6 +5,30 @@ using static Define;
 
 public class MonsterController : CreatureController
 {
+    // 랜덤 Patrol을 위한 코루틴
+    Coroutine _coPatrol;
+    // 목표 지점
+    Vector3Int _destCellPos;
+
+    public override CreatureState State
+    {
+        get { return _state; }
+        set
+        {
+            if (_state == value)
+                return;
+
+            base.State = value;
+            
+            // 코루틴 정지
+            if (_coPatrol != null)
+            {
+                StopCoroutine(_coPatrol);
+                _coPatrol = null;
+            }
+        }
+    }
+
     protected override void Init()
     {
         // 순서 중요 - animator 먼저 찾아줘야 하기 때문
@@ -12,39 +36,58 @@ public class MonsterController : CreatureController
         State = CreatureState.Idle;
         Dir = MoveDir.None;
     }
-    protected override void UpdateController()
+
+    protected override void UpdateIdle()
     {
-        // GetDirInput();
-        base.UpdateController();
+        base.UpdateIdle();
+
+        if(_coPatrol == null)
+        {
+            _coPatrol = StartCoroutine("CoPatrol");
+        }
     }
-    // 이동 키 입력 받음
-    void GetDirInput()
+
+    protected override void MoveToNextPos()
     {
-        if (Input.GetKey(KeyCode.W))
-        {
-            // 기기마다 Frame이 다를 수 있기 때문에 deltaTime을 곱해서 모든 머신에서 같게 보이게 함
-            //transform.position += Vector3.up * Time.deltaTime * _speed;
-            Dir = MoveDir.Up;
-        }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            //transform.position += Vector3.down * Time.deltaTime * _speed;
-            Dir = MoveDir.Down;
-        }
-        else if (Input.GetKey(KeyCode.A))
-        {
-            //transform.position += Vector3.left * Time.deltaTime * _speed;
-            Dir = MoveDir.Left;
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            //transform.position += Vector3.right * Time.deltaTime * _speed;
+        // TODO : Astar
+        Vector3Int moveCellDir = _destCellPos - CellPos;
+        if (moveCellDir.x > 0)
             Dir = MoveDir.Right;
+        else if (moveCellDir.x < 0)
+            Dir = MoveDir.Left;
+        else if (moveCellDir.y > 0)
+            Dir = MoveDir.Up;
+        else if (moveCellDir.y < 0)
+            Dir = MoveDir.Down;
+        else
+            Dir = MoveDir.None;
+
+        Vector3Int destPos = CellPos;
+        switch (_dir)
+        {
+            case MoveDir.Up:
+                destPos += Vector3Int.up;
+                break;
+            case MoveDir.Down:
+                destPos += Vector3Int.down;
+                break;
+            case MoveDir.Left:
+                destPos += Vector3Int.left;
+                break;
+            case MoveDir.Right:
+                destPos += Vector3Int.right;
+                break;
+        }
+
+        if (Managers.Map.CanGo(destPos) && Managers.Object.Find(destPos) == null)
+        {
+            CellPos = destPos;
         }
         else
         {
-            Dir = MoveDir.None;
+            State = CreatureState.Idle;
         }
+
     }
 
     // 피격 처리
@@ -59,5 +102,30 @@ public class MonsterController : CreatureController
         // 피격
         Managers.Object.Remove(gameObject);
         Managers.Resource.Destroy(gameObject);
+    }
+
+    IEnumerator CoPatrol()
+    {
+        // 1~3초 대기
+        int waitSeconds = Random.Range(1, 4);
+        yield return new WaitForSeconds(waitSeconds);
+        
+        for(int i=0;i<10;i++)
+        {
+            int xRange = Random.Range(-5, 6);
+            int yRange = Random.Range(-5, 6);
+            Vector3Int randPos = CellPos + new Vector3Int(xRange, yRange);
+
+            // 갈 수 있는 곳이면
+            if(Managers.Map.CanGo(randPos) && Managers.Object.Find(randPos) == null)
+            {
+                _destCellPos = randPos;
+                State = CreatureState.Moving;
+                // 코루틴 탈출
+                yield break;
+            }
+        }
+        // 코루틴 정지
+        State = CreatureState.Idle;
     }
 }

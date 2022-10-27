@@ -23,6 +23,10 @@ public class ArrowController : CreatureController
                 transform.rotation = Quaternion.Euler(0, 0, -90);
                 break;
         }
+        // 이동 상태밖에 없음
+        State = CreatureState.Moving;
+        _speed = 15.0f;
+
         base.Init();
     }
 
@@ -32,51 +36,46 @@ public class ArrowController : CreatureController
 
     }
 
-    // 이동 가능한 상태일 때(Idle) 실제 좌표 이동
-    protected override void UpdateIdle()
+    protected override void MoveToNextPos()
     {
-        if (_dir != MoveDir.None)
+        Vector3Int destPos = CellPos;
+        switch (_dir)
         {
-            Vector3Int destPos = CellPos;
-            switch (_dir)
-            {
-                case MoveDir.Up:
-                    destPos += Vector3Int.up;
-                    break;
-                case MoveDir.Down:
-                    destPos += Vector3Int.down;
-                    break;
-                case MoveDir.Left:
-                    destPos += Vector3Int.left;
-                    break;
-                case MoveDir.Right:
-                    destPos += Vector3Int.right;
-                    break;
-            }
-            State = CreatureState.Moving;
+            case MoveDir.Up:
+                destPos += Vector3Int.up;
+                break;
+            case MoveDir.Down:
+                destPos += Vector3Int.down;
+                break;
+            case MoveDir.Left:
+                destPos += Vector3Int.left;
+                break;
+            case MoveDir.Right:
+                destPos += Vector3Int.right;
+                break;
+        }
 
-            if (Managers.Map.CanGo(destPos))
+        if (Managers.Map.CanGo(destPos))
+        {
+            GameObject go = Managers.Object.Find(destPos);
+            if (go == null)
             {
-                GameObject go = Managers.Object.Find(destPos);
-                if (go == null)
-                {
-                    CellPos = destPos;
-                }
-                else
-                {
-                    CreatureController cc = go.GetComponent<CreatureController>();
-                    if (cc != null)
-                        cc.OnDamaged();
-
-                    // 화살 - 오브젝트에 충돌 후 소멸
-                    Managers.Resource.Destroy(gameObject);
-                }
+                CellPos = destPos;
             }
             else
             {
-                // 화살 소멸
+                CreatureController cc = go.GetComponent<CreatureController>();
+                if (cc != null)
+                    cc.OnDamaged();
+
+                // 화살 - 오브젝트에 충돌 후 소멸
                 Managers.Resource.Destroy(gameObject);
             }
+        }
+        else
+        {
+            // 화살 소멸
+            Managers.Resource.Destroy(gameObject);
         }
     }
 }
