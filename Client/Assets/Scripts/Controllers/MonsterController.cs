@@ -7,8 +7,17 @@ public class MonsterController : CreatureController
 {
     // 랜덤 Patrol을 위한 코루틴
     Coroutine _coPatrol;
+    // Search를 위한 코루틴
+    Coroutine _coSearch;
     // 목표 지점
+    [SerializeField]
     Vector3Int _destCellPos;
+
+    // Search 대상
+    [SerializeField]
+    GameObject _target;
+    [SerializeField]
+    float _searchRange = 5.0f;
 
     public override CreatureState State
     {
@@ -26,6 +35,13 @@ public class MonsterController : CreatureController
                 StopCoroutine(_coPatrol);
                 _coPatrol = null;
             }
+
+            // 코루틴 정지
+            if (_coSearch != null)
+            {
+                StopCoroutine(_coSearch);
+                _coSearch = null;
+            }
         }
     }
 
@@ -33,8 +49,11 @@ public class MonsterController : CreatureController
     {
         // 순서 중요 - animator 먼저 찾아줘야 하기 때문
         base.Init();
+
         State = CreatureState.Idle;
         Dir = MoveDir.None;
+
+        _speed = 3.0f;
     }
 
     protected override void UpdateIdle()
@@ -45,12 +64,37 @@ public class MonsterController : CreatureController
         {
             _coPatrol = StartCoroutine("CoPatrol");
         }
+
+        if (_coSearch == null)
+        {
+            _coSearch = StartCoroutine("CoSearch");
+        }
     }
 
     protected override void MoveToNextPos()
     {
-        // TODO : Astar
-        Vector3Int moveCellDir = _destCellPos - CellPos;
+        Vector3Int destPos = _destCellPos;
+        // Search 상태라면
+        if(_target != null)
+        {
+            destPos = _target.GetComponent<CreatureController>().CellPos;
+        }
+
+        // a* algorithm
+        List<Vector3Int> path = Managers.Map.FindPath(CellPos, destPos, ignoreDestCollision: true);
+
+        // 길을 못찾은 경우 || Player가 너무 멀어진 경우
+        if(path.Count < 2 || (_target != null && path.Count > 10))
+        {
+            _target = null;
+            State = CreatureState.Idle;
+            return;
+        }
+
+        // 찾은 길을 하나씩 꺼내서 걸어감
+        Vector3Int nextPos = path[1];
+
+        Vector3Int moveCellDir = nextPos - CellPos;
         if (moveCellDir.x > 0)
             Dir = MoveDir.Right;
         else if (moveCellDir.x < 0)
@@ -62,26 +106,9 @@ public class MonsterController : CreatureController
         else
             Dir = MoveDir.None;
 
-        Vector3Int destPos = CellPos;
-        switch (_dir)
+        if (Managers.Map.CanGo(nextPos) && Managers.Object.Find(nextPos) == null)
         {
-            case MoveDir.Up:
-                destPos += Vector3Int.up;
-                break;
-            case MoveDir.Down:
-                destPos += Vector3Int.down;
-                break;
-            case MoveDir.Left:
-                destPos += Vector3Int.left;
-                break;
-            case MoveDir.Right:
-                destPos += Vector3Int.right;
-                break;
-        }
-
-        if (Managers.Map.CanGo(destPos) && Managers.Object.Find(destPos) == null)
-        {
-            CellPos = destPos;
+            CellPos = nextPos;
         }
         else
         {
@@ -127,5 +154,33 @@ public class MonsterController : CreatureController
         }
         // 코루틴 정지
         State = CreatureState.Idle;
+    }
+
+    IEnumerator CoSearch()
+    {
+        while(true)
+        {
+            // 1초마다 스캔 - 부하를 줄임
+            yield return new WaitForSeconds(1);
+
+            // 이미 타겟을 찾았다면
+            if (_target != null)
+                continue;
+
+            _target = Managers.Object.Find((go) =>
+            {
+                PlayerController pc = go.GetComponent<PlayerController>();
+                // Player가 아니라면
+                if (pc == null)
+                    return false;
+
+                Vector3Int dir = pc.CellPos - CellPos;
+                // 탐색 범위보다 멀리 있다면
+                if (dir.magnitude > _searchRange)
+                    return false;
+
+                return true;
+            });
+        }
     }
 }

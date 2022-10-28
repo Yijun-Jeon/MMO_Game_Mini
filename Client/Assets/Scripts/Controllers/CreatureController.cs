@@ -7,12 +7,14 @@ using static Define;
 
 public class CreatureController : MonoBehaviour
 {
+    [SerializeField]
     public float _speed = 5.0f;
 
     public Vector3Int CellPos { get; set; } = new Vector3Int(-4, 1, 0); // 좌표상에 실제 위치
     protected Animator _animator;
     protected SpriteRenderer _sprite;
 
+    [SerializeField]
     protected CreatureState _state = CreatureState.Idle;
     public virtual CreatureState State
     {
@@ -29,6 +31,7 @@ public class CreatureController : MonoBehaviour
 
     // 마지막으로 바라보고 있던 방향
     protected MoveDir _lastDir = MoveDir.Down;
+    [SerializeField]
     protected MoveDir _dir = MoveDir.Down;
 
     public MoveDir Dir
