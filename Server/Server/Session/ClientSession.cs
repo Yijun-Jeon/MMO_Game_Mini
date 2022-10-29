@@ -8,11 +8,14 @@ using ServerCore;
 using System.Net;
 using Google.Protobuf.Protocol;
 using Google.Protobuf;
+using Server.Game;
 
 namespace Server
 {
-	class ClientSession : PacketSession
+	public class ClientSession : PacketSession
 	{
+		// 관리하는 내 플레이어
+		public Player MyPlayer { get; set; }
 		public int SessionId { get; set; }
 
 		public void Send(IMessage packet)
@@ -23,7 +26,7 @@ namespace Server
 
             ushort size = (ushort)packet.CalculateSize();
             byte[] sendBuffer = new byte[size + 4];
-            Array.Copy(BitConverter.GetBytes(size + 4), 0, sendBuffer, 0, sizeof(ushort));
+            Array.Copy(BitConverter.GetBytes((ushort)(size + 4)), 0, sendBuffer, 0, sizeof(ushort));
             Array.Copy(BitConverter.GetBytes((ushort)msgId), 0, sendBuffer, 2, sizeof(ushort));
             Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
 
@@ -35,12 +38,16 @@ namespace Server
 			Console.WriteLine($"OnConnected : {endPoint}");
 
 			// PROTO Test
-			S_Chat chat = new S_Chat()
+			MyPlayer = PlayerManager.Instance.Add();
 			{
-				Context = "안녕하세요"
-			};
+				MyPlayer.info.Name = $"Player_{MyPlayer.info.PlayerId}";
+				MyPlayer.info.PosX = 0;
+				MyPlayer.info.PosY = 0;
+				MyPlayer.Session = this;
+			}
 
-			Send(chat);
+			// 1번방에 플레이어 입장
+			RoomManager.Instance.Find(1).EnterGame(MyPlayer);
 		}
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)
@@ -50,6 +57,8 @@ namespace Server
 
 		public override void OnDisconnected(EndPoint endPoint)
 		{
+			RoomManager.Instance.Find(1).LeaveGame(MyPlayer.info.PlayerId);
+
 			SessionManager.Instance.Remove(this);
 
 			Console.WriteLine($"OnDisconnected : {endPoint}");
