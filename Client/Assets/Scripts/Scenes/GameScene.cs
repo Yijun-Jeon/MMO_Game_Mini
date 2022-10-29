@@ -12,6 +12,9 @@ public class GameScene : BaseScene
 
         Managers.Map.LoadMap(1);
 
+        // 빌드 화면 크기 설정
+        Screen.SetResolution(640, 480, false);
+
         //GameObject player = Managers.Resource.Instantiate("Creature/Player");
         //player.name = "Player";
         //Managers.Object.Add(player);
