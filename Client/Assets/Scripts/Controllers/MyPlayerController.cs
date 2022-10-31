@@ -1,3 +1,4 @@
+using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -70,6 +71,22 @@ public class MyPlayerController : PlayerController
             State = CreatureState.Skill;
             //_coSkill = StartCoroutine("CoStartPunch");
             _coSkill = StartCoroutine("CoStartShootArrow");
+        }
+    }
+
+    protected override void MoveToNextPos()
+    {
+        // 이전 상태, 위치 기록
+        CreatureState prevState = State;
+        Vector3Int prevCellPos = CellPos;
+
+        base.MoveToNextPos();
+        // 상태나 위치가 변하였다면 패킷 전송
+        if(prevState != State || prevCellPos != CellPos)
+        {
+            C_Move movePacket = new C_Move();
+            movePacket.PosInfo = PosInfo;
+            Managers.Network.Send(movePacket);
         }
     }
 
