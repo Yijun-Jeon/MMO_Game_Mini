@@ -21,7 +21,8 @@ public class ObjectManager
 			MyPlayer = go.GetComponent<MyPlayerController>();
 			MyPlayer.Id = info.PlayerId;
 			MyPlayer.PosInfo = info.PosInfo;
-		}
+			MyPlayer.SyncPos();
+        }
 		else
 		{
             GameObject go = Managers.Resource.Instantiate("Creature/Player");
@@ -31,8 +32,7 @@ public class ObjectManager
             PlayerController pc = go.GetComponent<PlayerController>();
             pc.Id = info.PlayerId;
 			pc.PosInfo = info.PosInfo;
-
-
+			pc.SyncPos();
         }
 	}
 

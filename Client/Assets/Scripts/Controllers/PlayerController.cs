@@ -103,23 +103,36 @@ public class PlayerController : CreatureController
 		}
 	}
 
-	IEnumerator CoStartPunch()
+	public void UseSkill(int skillId)
 	{
-		// 피격 판정
-		GameObject go = Managers.Object.Find(GetFrontCellPos());
-		if (go != null)
+		// 펀치
+		if(skillId == 1)
 		{
-			CreatureController cc = go.GetComponent<CreatureController>();
-			if (cc != null)
-				cc.OnDamaged();
+			_coSkill = StartCoroutine("CoStartPunch");
 		}
+	}
+
+	protected virtual void CheckUpdatedFlag()
+	{
+
+	}
+
+
+    IEnumerator CoStartPunch()
+	{
+		// 피격 판정 부분 삭제 -> 서버
 
 		// 대기 시간
 		_rangedSkill = false;
+		State = CreatureState.Skill;
+		// 스킬의 쿨타임 체크는 클라 & 서버 둘 다 해야함
 		yield return new WaitForSeconds(0.5f);
 		State = CreatureState.Idle;
 		_coSkill = null;
-	}
+        // 서버에서는 자동으로 Idle 상태로 돌아가는 코드가 없음
+        // 임시 방편으로 Dirty Flag로 movePacket을 전송하던 방식 사용
+        CheckUpdatedFlag();
+    }
 
 	IEnumerator CoStartShootArrow()
 	{
