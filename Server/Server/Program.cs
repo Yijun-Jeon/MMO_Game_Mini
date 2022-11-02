@@ -26,7 +26,7 @@ namespace Server
 		static void Main(string[] args)
 		{
 			// 게임룸 생성
-			RoomManager.Instance.Add();
+			RoomManager.Instance.Add(1);
 
 			// DNS (Domain Name System)
 			string host = Dns.GetHostName();
