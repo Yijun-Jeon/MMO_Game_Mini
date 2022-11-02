@@ -74,6 +74,19 @@ namespace Server.Game
             return !_collision[y, x] && (!checkObjects || _players[y, x] == null);
         }
 
+        // 해당 위치 플레이어 반환
+        public Player Find(Vector2Int cellPos)
+        {
+            if (cellPos.x < MinX || cellPos.x > MaxX)
+                return null;
+            if (cellPos.y < MinY || cellPos.y > MaxY)
+                return null;
+
+            int x = cellPos.x - MinX;
+            int y = MaxY - cellPos.y;
+            return _players[y, x];
+        }
+
         public bool ApplyMove(Player player, Vector2Int dest)
         {
             PositionInfo posInfo = player.info.PosInfo;
@@ -97,7 +110,9 @@ namespace Server.Game
                 int y = MaxY - dest.y;
                 _players[y, x] = player;
             }
-
+            // 실제 좌표 변경
+            posInfo.PosX = dest.x;
+            posInfo.PosY = dest.y;
             return true;
         }
 
@@ -106,9 +121,9 @@ namespace Server.Game
             string mapName = "Map_" + mapId.ToString("000");
 
             // Collision 관련 파일
-            string text = File.ReadAllText($"{pathPrefix}/{mapName}");
+            string text = File.ReadAllText($"{pathPrefix}/{mapName}.txt");
             StringReader reader = new StringReader(text);
-
+                            
             MinX = int.Parse(reader.ReadLine());
             MaxX = int.Parse(reader.ReadLine());
             MinY = int.Parse(reader.ReadLine());

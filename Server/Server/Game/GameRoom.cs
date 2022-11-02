@@ -151,6 +151,13 @@ namespace Server.Game
                 Broadcast(skill);
 
                 // TODO : 데미지 판정
+                Vector2Int skillPos = player.GetFrontCellPos(info.PosInfo.MoveDir);
+                // 해당 위치에 있는 플레이어 반환
+                Player target = _map.Find(skillPos);
+                if(target != null)
+                {
+                    Console.WriteLine("Hit Player!");
+                }
             }
         }
     }
