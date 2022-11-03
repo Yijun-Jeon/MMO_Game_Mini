@@ -5,12 +5,27 @@ using System.Text;
 
 namespace Server.Game
 {
-    public class Player
+    public class GameObject
     {
-        public PlayerInfo info { get; set; } = new PlayerInfo() { 
-            PosInfo = new PositionInfo()};
+        public GameObjectType ObjectType { get; protected set; } = GameObjectType.None;
+        public int Id
+        {
+            get { return info.ObjectId; }
+            set { info.ObjectId = value; }
+        }
+
         public GameRoom Room { get; set; }
-        public ClientSession Session { get; set; }
+
+        public ObjectInfo info { get; set; } = new ObjectInfo();
+        // Info에 소속되지 않고 따로 관리 시작
+        public PositionInfo PosInfo { get; private set; } = new PositionInfo();
+
+        // 생성자에서 연동
+        public GameObject()
+        {
+            info.PosInfo = PosInfo;
+        }
+
         public Vector2Int CellPos
         {
             get
@@ -22,6 +37,11 @@ namespace Server.Game
                 info.PosInfo.PosX = value.x;
                 info.PosInfo.PosY = value.y;
             }
+        }
+
+        public Vector2Int GetFrontCellPos()
+        {
+            return GetFrontCellPos(PosInfo.MoveDir);
         }
 
         public Vector2Int GetFrontCellPos(MoveDir dir)
