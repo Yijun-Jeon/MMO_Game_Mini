@@ -37,12 +37,15 @@ namespace Server
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			Console.WriteLine("Listening...");
 
-			//FlushRoom();
-			JobTimer.Instance.Push(FlushRoom);
+            //FlushRoom();
+            //JobTimer.Instance.Push(FlushRoom);
 
-			while (true)
+            // 일단 무식하게 무한루프로 Update 검사
+            while (true)
 			{
-				JobTimer.Instance.Flush();
+				//JobTimer.Instance.Flush();
+				RoomManager.Instance.Find(1).Update();
+				Thread.Sleep(100);
 			}
 		}
 	}

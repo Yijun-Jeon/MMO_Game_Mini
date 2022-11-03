@@ -12,5 +12,10 @@ namespace Server.Game
         {
             ObjectType = GameObjectType.Projecttile;
         }
+
+        public virtual void Update()
+        {
+
+        }
     }
 }
