@@ -47,7 +47,7 @@ public class CreatureController : MonoBehaviour
 			if (_positionInfo.Equals(value))
 				return;
 
-			CellPos = new Vector3Int(value.PosX, value.PosY);
+			CellPos = new Vector3Int(value.PosX, value.PosY,0);
 			State = value.State;
 			Dir = value.MoveDir;
 		}

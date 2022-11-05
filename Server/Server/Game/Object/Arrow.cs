@@ -40,7 +40,8 @@ namespace Server.Game
                 if (target != null)
                 {
                     // 피격 판정
-                    target.OnDamaged(this, Data.damage);
+                    // 화살 데미지 + 플레이어 공격력
+                    target.OnDamaged(this, Data.damage + Owner.Stat.Attack);
                 }
                 // 소멸
                 Room.LeaveGame(Id);

@@ -53,7 +53,7 @@ namespace Server.Game
                     // 본인한테 정보 전송
                     {
                         S_EnterGame enterPacket = new S_EnterGame();
-                        enterPacket.Player = player.info;
+                        enterPacket.Player = player.Info;
                         player.Session.Send(enterPacket);
 
                         // 다른 유저들 정보
@@ -61,7 +61,7 @@ namespace Server.Game
                         foreach (Player p in _players.Values)
                         {
                             if (player != p)
-                                spawnPacket.Objects.Add(p.info);
+                                spawnPacket.Objects.Add(p.Info);
                         }
                         player.Session.Send(spawnPacket);
                     }
@@ -69,14 +69,14 @@ namespace Server.Game
                 else if(type == GameObjectType.Monster)
                 {
                     Monster monster = gameObject as Monster;
-                    _monsters.Add(monster.Id, monster);
+                    _monsters.Add(gameObject.Id, monster);
                     monster.Room = this;
 
                 }
                 else if(type == GameObjectType.Projecttile)
                 {
                     Projecttile projecttile = gameObject as Projecttile;
-                    _projecttiles.Add(projecttile.Id, projecttile);
+                    _projecttiles.Add(gameObject.Id, projecttile);
                     projecttile.Room = this;
                 }
                
@@ -84,7 +84,7 @@ namespace Server.Game
                 // 타인한테 정보 전송
                 {
                     S_Spawn spawnPacket = new S_Spawn();
-                    spawnPacket.Objects.Add(gameObject.info);
+                    spawnPacket.Objects.Add(gameObject.Info);
                     foreach(Player p in _players.Values)
                     {
                         if (p.Id != gameObject.Id)
@@ -166,7 +166,7 @@ namespace Server.Game
             lock(_lock)
             {
                 PositionInfo movePosInfo = movePacket.PosInfo;
-                ObjectInfo info = player.info;
+                ObjectInfo info = player.Info;
 
                 // 다른 좌표로 이동하려는 경우, 갈 수 있는지 체크
                 if(movePosInfo.PosX != info.PosInfo.PosX || movePosInfo.PosY != info.PosInfo.PosY)
@@ -182,7 +182,7 @@ namespace Server.Game
 
                 // 다른 플레이어한테도 알려줌
                 S_Move resMovePacket = new S_Move();
-                resMovePacket.ObjectId = player.info.ObjectId;
+                resMovePacket.ObjectId = player.Info.ObjectId;
                 resMovePacket.PosInfo = movePacket.PosInfo;
 
                 Broadcast(resMovePacket);
@@ -196,7 +196,7 @@ namespace Server.Game
 
             lock(_lock)
             {
-                ObjectInfo info = player.info;
+                ObjectInfo info = player.Info;
                 // 스킬을 쓸 수 없는 상태
                 if (info.PosInfo.State != CreatureState.Idle)
                     return;
@@ -204,8 +204,9 @@ namespace Server.Game
                 // TODO : 스킬 사용 가능 여부 체크 - 쿨타임 등
 
                 // 통과
+                info.PosInfo.State = CreatureState.Skill;
                 S_Skill skill = new S_Skill() { Info = new SkillInfo() };
-                skill.ObjectId = player.info.ObjectId;
+                skill.ObjectId = player.Info.ObjectId;
                 skill.Info.SkillId = skillPacket.Info.SkillId;
                 Broadcast(skill);
 

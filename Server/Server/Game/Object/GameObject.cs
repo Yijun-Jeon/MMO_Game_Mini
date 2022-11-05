@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks.Dataflow;
 
 namespace Server.Game
 {
@@ -10,13 +11,13 @@ namespace Server.Game
         public GameObjectType ObjectType { get; protected set; } = GameObjectType.None;
         public int Id
         {
-            get { return info.ObjectId; }
-            set { info.ObjectId = value; }
+            get { return Info.ObjectId; }
+            set { Info.ObjectId = value; }
         }
 
         public GameRoom Room { get; set; }
 
-        public ObjectInfo info { get; set; } = new ObjectInfo();
+        public ObjectInfo Info { get; set; } = new ObjectInfo();
         // Info에 소속되지 않고 따로 관리 시작
         public PositionInfo PosInfo { get; private set; } = new PositionInfo();
         public StatInfo Stat { get; private set; } = new StatInfo();
@@ -31,20 +32,20 @@ namespace Server.Game
         // 생성자에서 연동
         public GameObject()
         {
-            info.PosInfo = PosInfo;
-            info.StatInfo = Stat;
+            Info.PosInfo = PosInfo;
+            Info.StatInfo = Stat;
         }
 
         public Vector2Int CellPos
         {
             get
             {
-                return new Vector2Int(info.PosInfo.PosX, info.PosInfo.PosY);
+                return new Vector2Int(PosInfo.PosX, PosInfo.PosY);
             }
             set
             {
-                info.PosInfo.PosX = value.x;
-                info.PosInfo.PosY = value.y;
+                PosInfo.PosX = value.x;
+                PosInfo.PosY = value.y;
             }
         }
 
@@ -77,6 +78,21 @@ namespace Server.Game
         }
 
         public virtual void OnDamaged(GameObject attacker, int damage)
+        {
+            Stat.Hp = Math.Max(Stat.Hp - damage, 0);
+
+            S_ChangeHp changePacket = new S_ChangeHp();
+            changePacket.ObjectId = Id;
+            changePacket.Hp = Stat.Hp;
+            Room.Broadcast(changePacket);
+
+            if(Stat.Hp <= 0)
+            {
+                OnDead(attacker); // 사망, PK point 등 처리
+            }
+        }
+
+        public virtual void OnDead(GameObject attacker)
         {
 
         }

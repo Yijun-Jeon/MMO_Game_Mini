@@ -93,7 +93,7 @@ namespace Server.Game
             // 오브젝트가 원래 있던 위치 비워줌
             ApplyLeave(gameObject);
 
-            PositionInfo posInfo = gameObject.info.PosInfo;
+            PositionInfo posInfo = gameObject.Info.PosInfo;
             if (CanGo(dest, true) == false)
                 return false;
             
@@ -111,7 +111,7 @@ namespace Server.Game
 
         public bool ApplyLeave(GameObject gameObject)
         {
-            PositionInfo posInfo = gameObject.info.PosInfo;
+            PositionInfo posInfo = gameObject.Info.PosInfo;
             if (posInfo.PosX < MinX || posInfo.PosX > MaxX)
                 return false;
             if (posInfo.PosY < MinX || posInfo.PosY > MaxX)
