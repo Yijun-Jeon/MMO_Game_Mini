@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
+using Server.Data;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -207,33 +208,41 @@ namespace Server.Game
                 skill.ObjectId = player.info.ObjectId;
                 skill.Info.SkillId = skillPacket.Info.SkillId;
                 Broadcast(skill);
-                // 펀치 스킬
-                if (skillPacket.Info.SkillId == 1)
-                {
-                    // TODO : 데미지 판정
-                    Vector2Int skillPos = player.GetFrontCellPos(info.PosInfo.MoveDir);
-                    // 해당 위치에 있는 플레이어 반환
-                    GameObject target = Map.Find(skillPos);
-                    if (target != null)
-                    {
-                        Console.WriteLine("Hit GameObject!");
-                    }
-                }
-                // 화살 스킬
-                else if (skillPacket.Info.SkillId == 2)
-                {
-                    Arrow arrow = ObjectManager.Instance.Add<Arrow>();
-                    if (arrow == null)
-                        return;
 
-                    arrow.Owner = player;
-                    arrow.PosInfo.State = CreatureState.Moving;
-                    arrow.PosInfo.MoveDir = player.PosInfo.MoveDir;
-                    arrow.PosInfo.PosX = player.PosInfo.PosX;
-                    arrow.PosInfo.PosY = player.PosInfo.PosY;
+                Data.Skill skillData = null;
+                if (DataManager.SkillDict.TryGetValue(skillPacket.Info.SkillId, out skillData) == false)
+                    return;
+                switch (skillData.skillType)
+                {
+                    case SkillType.SkillAuto:
+                        {
+                            // TODO : 데미지 판정
+                            Vector2Int skillPos = player.GetFrontCellPos(info.PosInfo.MoveDir);
+                            // 해당 위치에 있는 플레이어 반환
+                            GameObject target = Map.Find(skillPos);
+                            if (target != null)
+                            {
+                                Console.WriteLine("Hit GameObject!");
+                            }
+                        }
+                        break;
+                    case SkillType.SkillProjecttile:
+                        {
+                            Arrow arrow = ObjectManager.Instance.Add<Arrow>();
+                            if (arrow == null)
+                                return;
 
-                    // 화살도 서버에서 관리하여 클라로 전송
-                    EnterGame(arrow);
+                            arrow.Owner = player;
+                            arrow.Data = skillData;
+                            arrow.PosInfo.State = CreatureState.Moving;
+                            arrow.PosInfo.MoveDir = player.PosInfo.MoveDir;
+                            arrow.PosInfo.PosX = player.PosInfo.PosX;
+                            arrow.PosInfo.PosY = player.PosInfo.PosY;
+
+                            // 화살도 서버에서 관리하여 클라로 전송
+                            EnterGame(arrow);
+                        }
+                        break;
                 }
             }
         }

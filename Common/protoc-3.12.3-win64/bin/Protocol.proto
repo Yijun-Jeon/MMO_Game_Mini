@@ -34,6 +34,12 @@ enum GameObjectType{
 	PROJECTTILE = 3; // 투사체
 }
 
+enum SkillType{
+	SKILL_NONE = 0;
+	SKILL_AUTO = 1; // 펀치
+	SKILL_PROJECTTILE = 2; // 투사체
+}
+
 message S_EnterGame {
   ObjectInfo player = 1;
 }

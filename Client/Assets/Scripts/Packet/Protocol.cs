@@ -45,10 +45,12 @@ namespace Google.Protobuf.Protocol {
             "S0lMTBACEggKBERFQUQQAyowCgdNb3ZlRGlyEgYKAlVQEAASCAoERE9XThAB",
             "EggKBExFRlQQAhIJCgVSSUdIVBADKkQKDkdhbWVPYmplY3RUeXBlEggKBE5P",
             "TkUQABIKCgZQTEFZRVIQARILCgdNT05TVEVSEAISDwoLUFJPSkVDVFRJTEUQ",
-            "A0IbqgIYR29vZ2xlLlByb3RvYnVmLlByb3RvY29sYgZwcm90bzM="));
+            "AypCCglTa2lsbFR5cGUSDgoKU0tJTExfTk9ORRAAEg4KClNLSUxMX0FVVE8Q",
+            "ARIVChFTS0lMTF9QUk9KRUNUVElMRRACQhuqAhhHb29nbGUuUHJvdG9idWYu",
+            "UHJvdG9jb2xiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.MoveDir), typeof(global::Google.Protobuf.Protocol.GameObjectType), }, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.MoveDir), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.SkillType), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_EnterGame), global::Google.Protobuf.Protocol.S_EnterGame.Parser, new[]{ "Player" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_LeaveGame), global::Google.Protobuf.Protocol.S_LeaveGame.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_Spawn), global::Google.Protobuf.Protocol.S_Spawn.Parser, new[]{ "Objects" }, null, null, null, null),
@@ -102,6 +104,18 @@ namespace Google.Protobuf.Protocol {
     /// 투사체
     /// </summary>
     [pbr::OriginalName("PROJECTTILE")] Projecttile = 3,
+  }
+
+  public enum SkillType {
+    [pbr::OriginalName("SKILL_NONE")] SkillNone = 0,
+    /// <summary>
+    /// 펀치
+    /// </summary>
+    [pbr::OriginalName("SKILL_AUTO")] SkillAuto = 1,
+    /// <summary>
+    /// 투사체
+    /// </summary>
+    [pbr::OriginalName("SKILL_PROJECTTILE")] SkillProjecttile = 2,
   }
 
   #endregion

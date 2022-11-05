@@ -13,14 +13,15 @@ namespace Server.Game
         long _nextMoveTick = 0;
         public override void Update()
         {
-            if (Owner == null || Room == null)
+            if (Data == null || Data.projecttile == null || Owner == null || Room == null)
                 return;
 
             // 아직 시간이 덜 됨
             if (_nextMoveTick >= Environment.TickCount64)
                 return;
 
-            _nextMoveTick = Environment.TickCount64 + 50;
+            long tick = (long)(1000 / Data.projecttile.speed);
+            _nextMoveTick = Environment.TickCount64 + tick;
 
             Vector2Int destPos = GetFrontCellPos();
             if(Room.Map.CanGo(destPos))
