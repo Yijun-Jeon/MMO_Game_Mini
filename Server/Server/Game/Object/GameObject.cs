@@ -19,11 +19,20 @@ namespace Server.Game
         public ObjectInfo info { get; set; } = new ObjectInfo();
         // Info에 소속되지 않고 따로 관리 시작
         public PositionInfo PosInfo { get; private set; } = new PositionInfo();
+        public StatInfo Stat { get; private set; } = new StatInfo();
+
+        // 자주 쓸 것 같은 데이터 따로 추출
+        public float Speed
+        {
+            get { return Stat.Speed; }
+            set { Stat.Speed = value; }
+        }
 
         // 생성자에서 연동
         public GameObject()
         {
             info.PosInfo = PosInfo;
+            info.StatInfo = Stat;
         }
 
         public Vector2Int CellPos
@@ -65,6 +74,11 @@ namespace Server.Game
             }
 
             return cellPos;
+        }
+
+        public virtual void OnDamaged(GameObject attacker, int damage)
+        {
+
         }
     }
 }

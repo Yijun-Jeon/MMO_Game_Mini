@@ -39,7 +39,8 @@ namespace Server.Game
                 GameObject target = Room.Map.Find(destPos);
                 if (target != null)
                 {
-                    // TODO : 피격 판정
+                    // 피격 판정
+                    target.OnDamaged(this, Data.damage);
                 }
                 // 소멸
                 Room.LeaveGame(Id);

@@ -9,8 +9,31 @@ using static Define;
 public class CreatureController : MonoBehaviour
 {
 	public int Id { get; set; }
-	[SerializeField]
-	public float _speed = 5.0f;
+
+	StatInfo _stat = new StatInfo();
+	public StatInfo Stat
+	{
+		get { return _stat; }
+		set
+		{
+			if (_stat.Equals(value))
+				return;
+
+			_stat.Hp = value.Hp;
+			_stat.MaxHp = value.MaxHp;
+			_stat.Speed = value.Speed;
+		}
+	}
+
+	// 자주 사용할 스탯 따로 추출
+	public float Speed
+	{
+		get { return Stat.Speed; }
+		set
+		{
+			Stat.Speed = value;
+		}
+	}
 
 	// dirty flag
 	protected bool _updated = false;
@@ -245,14 +268,14 @@ public class CreatureController : MonoBehaviour
 
 		// 도착 여부 체크
 		float dist = moveDir.magnitude;
-		if (dist < _speed * Time.deltaTime)
+		if (dist < Speed * Time.deltaTime)
 		{
 			transform.position = destPos;
 			MoveToNextPos();
 		}
 		else
 		{
-			transform.position += moveDir.normalized * _speed * Time.deltaTime;
+			transform.position += moveDir.normalized * Speed * Time.deltaTime;
 			State = CreatureState.Moving;
 		}
 	}

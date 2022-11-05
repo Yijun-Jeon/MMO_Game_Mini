@@ -238,7 +238,7 @@ namespace Server.Game
                             arrow.PosInfo.MoveDir = player.PosInfo.MoveDir;
                             arrow.PosInfo.PosX = player.PosInfo.PosX;
                             arrow.PosInfo.PosY = player.PosInfo.PosY;
-
+                            arrow.Speed = skillData.projecttile.speed;
                             // 화살도 서버에서 관리하여 클라로 전송
                             EnterGame(arrow);
                         }

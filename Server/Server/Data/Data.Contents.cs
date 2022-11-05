@@ -37,7 +37,7 @@ namespace Server.Data
         public int id;
         public string name;
         public float cooldown;
-        public int damagae;
+        public int damage;
         public SkillType skillType;
         public ProjecttileInfo projecttile;
     }
