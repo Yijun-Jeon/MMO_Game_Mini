@@ -8,6 +8,7 @@ using static Define;
 
 public class CreatureController : MonoBehaviour
 {
+	HpBar _hpBar;
 	public int Id { get; set; }
 
 	StatInfo _stat = new StatInfo();
@@ -22,7 +23,9 @@ public class CreatureController : MonoBehaviour
 			_stat.Hp = value.Hp;
 			_stat.MaxHp = value.MaxHp;
 			_stat.Speed = value.Speed;
-		}
+			UpdateHpBar();
+
+        }
 	}
 
 	// 자주 사용할 스탯 따로 추출
@@ -32,6 +35,16 @@ public class CreatureController : MonoBehaviour
 		set
 		{
 			Stat.Speed = value;
+		}
+	}
+
+	public int Hp
+	{
+		get { return Stat.Hp; }
+		set
+		{
+			Stat.Hp = value;
+			UpdateHpBar();
 		}
 	}
 
@@ -50,6 +63,32 @@ public class CreatureController : MonoBehaviour
 			CellPos = new Vector3Int(value.PosX, value.PosY,0);
 			State = value.State;
 			Dir = value.MoveDir;
+		}
+	}
+
+	// 투사체의 경우 호출하지 않음
+	protected void AddHpBar()
+	{
+		// HpBar의 부모를 이 Creature로 설정
+		GameObject go = Managers.Resource.Instantiate("UI/HpBar", transform);
+		// 상대좌표 설정
+		go.transform.localPosition = new Vector3(0, 0.5f, 0);
+		go.name = "HpBar";
+		_hpBar = go.GetComponent<HpBar>();
+		UpdateHpBar();
+
+	}
+
+	void UpdateHpBar()
+	{
+		if (_hpBar == null)
+			return;
+
+		float ratio = 0.0f;
+		if(Stat.MaxHp > 0)
+		{
+			ratio = ((float)Hp / Stat.MaxHp);
+			_hpBar.SetHpBar(ratio);
 		}
 	}
 

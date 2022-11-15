@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,12 +6,13 @@ using static Define;
 
 public class PlayerController : CreatureController
 {
-	protected Coroutine _coSkill;
+	protected Coroutine	 _coSkill;
     protected bool _rangedSkill = false;
 
 	protected override void Init()
 	{
-		base.Init();
+			base.Init();
+		AddHpBar();
 	}
 
 	protected override void UpdateAnimation()
@@ -23,7 +24,7 @@ public class PlayerController : CreatureController
 			switch (Dir)
 			{
 				case MoveDir.Up:
-					_animator.Play("IDLE_BACK");
+					_animator.Play("IDLE_BA,CK");
 					_sprite.flipX = false;
 					break;
 				case MoveDir.Down:

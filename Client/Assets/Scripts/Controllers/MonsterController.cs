@@ -52,8 +52,9 @@ public class MonsterController : CreatureController
 	protected override void Init()
 	{
 		base.Init();
+		AddHpBar();
 
-		State = CreatureState.Idle;
+        State = CreatureState.Idle;
 		Dir = MoveDir.Down;
 
 		_rangedSkill = (Random.Range(0, 2) == 0 ? true : false);

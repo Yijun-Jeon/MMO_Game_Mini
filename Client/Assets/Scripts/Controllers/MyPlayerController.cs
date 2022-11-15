@@ -13,7 +13,7 @@ public class MyPlayerController : PlayerController
     {
         base.Init();
     }
-
+    
     protected override void UpdateController()
     {
         switch (State)
@@ -29,7 +29,7 @@ public class MyPlayerController : PlayerController
         base.UpdateController();
     }
 
-    // Å°º¸µå ÀÔ·Â
+    // Å°ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½
     void GetDirInput()
     {
         _moveKeyPressed = true;
@@ -62,14 +62,14 @@ public class MyPlayerController : PlayerController
 
     protected override void UpdateIdle()
     {
-        // ÀÌµ¿ »óÅÂ·Î °¥Áö È®ÀÎ
+        // ï¿½Ìµï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
         if (_moveKeyPressed)
         {
             State = CreatureState.Moving;
             return;
         }
 
-        // ÄÚ·çÆ¾À¸·Î ½ºÅ³ Å° °­Á¦ ¿¬Å¸ ºÎÇÏ ¹æÁö
+        // ï¿½Ú·ï¿½Æ¾ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ Å° ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if(_coSkillCoolTime == null && Input.GetKey(KeyCode.Space))
         {
             C_Skill skill = new C_Skill() { Info = new SkillInfo() };
