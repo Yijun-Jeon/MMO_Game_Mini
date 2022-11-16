@@ -94,7 +94,28 @@ namespace Server.Game
 
         public virtual void OnDead(GameObject attacker)
         {
+            S_Die diePacket = new S_Die();
+            diePacket.ObjectId = Id;
+            // 본인일 수도 있음 - 낙사 등
+            diePacket.AttackerId = attacker.Id;
+            Room.Broadcast(diePacket);
 
+            GameRoom room = Room;
+
+            // 방에서 퇴장시킴
+            room.LeaveGame(Id);
+
+            // 스탯, 상태 초기화
+            Stat.Hp = Stat.MaxHp;
+            PosInfo.State = CreatureState.Idle;
+            PosInfo.MoveDir = MoveDir.Down;
+            PosInfo.PosX = 0;
+            PosInfo.PosY = 0;
+
+            // 다시 입장시킴
+            // LeaveGame시 Room이 null로 밀어지기 때문에 아래 방법 사용할 수 없음
+            // Room.EnterGame(this);
+            room.EnterGame(this);
         }
     }
 }

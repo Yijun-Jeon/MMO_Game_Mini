@@ -13,6 +13,7 @@ enum MsgId {
   C_SKILL = 6;
   S_SKILL = 7;
   S_CHANGE_HP = 8;
+  S_DIE = 9;
 }
 enum CreatureState{
     IDLE = 0;
@@ -77,6 +78,11 @@ message S_Skill{
 message S_ChangeHp{
 	int32 objectId = 1;
 	int32 hp = 2;
+}
+
+message S_Die{
+	int32 objectId = 1;
+	int32 attackerId = 2;
 }
 
 message ObjectInfo{
