@@ -75,6 +75,6 @@ public class CreatureController : BaseController
 		GameObject effect = Managers.Resource.Instantiate("Effect/DieEffect");
 		effect.transform.position = transform.position;
 		effect.GetComponent<Animator>().Play("START");
-		GameObject.Destroy(effect, 0.5f);
+		GameObject.Destroy(effect, 5f);
 	}
 }

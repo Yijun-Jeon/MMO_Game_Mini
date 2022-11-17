@@ -22,12 +22,21 @@ namespace Server.Game
         public void Init(int mapId)
         {
             Map.LoadMap(mapId,"../../../../../Common/MapData");
+
+            // TEMP
+            Monster monster = ObjectManager.Instance.Add<Monster>();
+            monster.CellPos = new Vector2Int(5, 5);
+            EnterGame(monster);
         }
 
         public void Update()
         {
             lock(_lock)
             {
+                foreach (Monster monster in _monsters.Values)
+                {
+                    monster.Update();
+                }
                 foreach(Projecttile projecttile in _projecttiles.Values)
                 {
                     projecttile.Update();
@@ -158,6 +167,17 @@ namespace Server.Game
                     }
                 }
             }
+        }
+
+        public Player FindPlayer(Func<GameObject, bool> condition)
+        {
+            // 모든 플레이어를 스캔하는 무식한 방법
+            foreach(Player player in _players.Values)
+            {
+                if (condition.Invoke(player))
+                    return player;
+            }
+            return null;
         }
 
         public void Broadcast(IMessage packet)
