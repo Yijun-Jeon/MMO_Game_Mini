@@ -114,6 +114,9 @@ namespace Server.Game
 
         public virtual void OnDamaged(GameObject attacker, int damage)
         {
+            if (Room == null)
+                return;
+
             Stat.Hp = Math.Max(Stat.Hp - damage, 0);
 
             S_ChangeHp changePacket = new S_ChangeHp();
@@ -129,6 +132,9 @@ namespace Server.Game
 
         public virtual void OnDead(GameObject attacker)
         {
+            if (Room == null)
+                return;
+             
             S_Die diePacket = new S_Die();
             diePacket.ObjectId = Id;
             // 본인일 수도 있음 - 낙사 등
@@ -138,7 +144,7 @@ namespace Server.Game
             GameRoom room = Room;
 
             // 방에서 퇴장시킴
-            room.LeaveGame(Id);
+            room.LeaveGame(Id); // 버그 때문에 예외적으로 승인
 
             // 스탯, 상태 초기화
             Stat.Hp = Stat.MaxHp;

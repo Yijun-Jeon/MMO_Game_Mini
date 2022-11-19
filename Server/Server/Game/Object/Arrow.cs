@@ -44,7 +44,8 @@ namespace Server.Game
                     target.OnDamaged(this, Data.damage + Owner.Stat.Attack);
                 }
                 // 소멸
-                Room.LeaveGame(Id);
+                //Room.LeaveGame(Id);
+                Room.Push(Room.LeaveGame, Id);
             }
         }
     }
