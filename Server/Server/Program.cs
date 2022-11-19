@@ -19,10 +19,19 @@ namespace Server
 	{
 		static Listener _listener = new Listener();
 
-		static void FlushRoom()
-		{
-			JobTimer.Instance.Push(FlushRoom, 250);
-		}
+		static List<System.Timers.Timer> _timers = new List<System.Timers.Timer>();
+		static void TickRoom(GameRoom room, int tick = 1000)
+        {
+			var timer = new System.Timers.Timer();
+			// 시간 간격
+			timer.Interval = tick;
+			// 실행 대상
+			timer.Elapsed += ((s, e) => { room.Update(); });
+			timer.AutoReset = true;
+			timer.Enabled = true;
+
+			_timers.Add(timer);
+        }
 
 		static void Main(string[] args)
 		{
@@ -32,7 +41,9 @@ namespace Server
 			var d = DataManager.StatDict;
 
 			// 게임룸 생성
-			RoomManager.Instance.Add(1);
+			GameRoom room = RoomManager.Instance.Add(1);
+			// 자동 업데이트 실행
+			TickRoom(room, 50);
 
 			// DNS (Domain Name System)
 			string host = Dns.GetHostName();
@@ -50,9 +61,6 @@ namespace Server
             while (true)
 			{
 				//JobTimer.Instance.Flush();
-				//RoomManager.Instance.Find(1).Update();
-				GameRoom room = RoomManager.Instance.Find(1);
-				room.Push(room.Update);
 				Thread.Sleep(100);
 			}
 		}
