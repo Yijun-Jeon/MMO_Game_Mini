@@ -51,6 +51,10 @@ class PacketHandler
         if (go == null)
             return;
 
+        // 내 플레이어라면 좌표 재확인 불필요
+        if (Managers.Object.MyPlayer.Id == movePacket.ObjectId)
+            return;
+
         BaseController bc = go.GetComponent<BaseController>();
         if (bc == null)
             return;

@@ -28,15 +28,6 @@ namespace Server.Game
             monster.CellPos = new Vector2Int(5, 5);
             //EnterGame(monster);
             Push(EnterGame, monster);
-
-            TestTimer();
-        }
-
-        // TEST
-        void TestTimer()
-        {
-            Console.WriteLine("TestTimer");
-            PushAfter(100, TestTimer);
         }
 
         // 누군가가 주기적으로 호출해줘야함
